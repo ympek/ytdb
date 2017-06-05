@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>DUB YT - Youtube dubbing online tool</title>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css"
+          integrity="sha384-UQiGfs9ICog+LwheBSRCt1o5cbyKIHbwjWscjemyBMT9YCUMZffs6UqUTd0hObXD"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/grids-responsive-min.css">
+
+    <style type="text/css">
+        body {
+            font-family: Calibri, sans-serif;
+            color: #222;
+        }
+
+        .left-col {
+            background: #4eaefa;
+        }
+
+        .labels-col label {
+            display: block;
+            height: 30px;
+            text-align: right;
+        }
+
+        .right-col {
+            background: #e2e4ee;
+        }
+
+        input {
+
+        }
+
+        .inputs-col input {
+            display: block;
+            height: 20px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        #player-audio {
+            /*display: none;*/
+        }
+
+        footer {
+            clear: both;
+            text-align: center;
+            color: #666;
+        }
+
+        section {
+            padding: 5px;
+            margin: 20px 0;
+        }
+
+        .header {
+            background: #edaede;
+        }
+
+        .examples {
+            background: #11e1fe;
+        }
+
+        .example {
+            background: #ff1;
+        }
+
+        h1 {}
+
+    </style>
+</head>
+<body>
+<article>
+    <section class="header">
+        <h1>DUB YT</h1>
+        <h2>Mix videos with background audio from other videos to make comedic effect. See <a href="#examples">examples.</a></h2>
+    </section>
+    <!--?a=ZuHakRzq5yE&v=SmM0653YvXU-->
+    <section class="pure-g">
+        <form>
+            <div class="pure-u-1-2 left-col">
+                <label for="audio-from">Audio from: </label>
+                <input id="audio-from" type="text"/>
+                <!--checkbox-->
+                <input type="checkbox"/> Toggle audio player visibilty
+                <div id="player-audio"></div>
+
+
+            </div>
+
+            <div class="pure-u-1-2 right-col">
+                <label for="video-from">Video from: </label>
+                <input id="video-from" type="text"/>
+                <button class="pure-button pure-button-primary">DUB IT</button>
+
+                <div id="player-video"></div>
+            </div>
+        </form>
+    </section>
+    <h2>Examples</h2>
+    <section class="examples">
+        <article class="example"
+                 data-a="ZuHakRzq5yE"
+                 data-v="SmM0653YvXU">
+            <p>Audio from: Mrozu feat. Sound'n'Grace - Nic do stracenia [Official Music Video]</p>
+            <p>Video from: Pitbull - Rain Over Me ft. Marc Anthony</p>
+        </article>
+
+        <article class="example"
+                 data-a="2CVzh3K29TQ"
+                 data-v="F8Cg572dafQ">
+            <p>Audio from: Letni, Chamski Podryw - "Czinkłaczento" - Klip</p>
+            <p>Video from: Flo Rida - GDFR ft. Sage The Gemini and Lookas [Official Video]</p>
+        </article>
+    </section>
+    <!-- potem TODO upvotes, fb share itd. -->
+    <footer>
+        YT DUBBER is an afternoon project of <a href="http://ympek.net">ympek</a>. Check out my stuff or hire me.
+    </footer>
+
+</article>
+<script type="text/javascript">
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    var playerAudio, playerVideo;
+    function onYouTubeIframeAPIReady() {
+        playerAudio = new YT.Player('player-audio', {
+            height: 200,
+            width: 240,
+            events: {
+                'onReady': setupAudioPlayer
+            }
+        });
+
+        playerVideo = new YT.Player('player-video', {
+            height: 390,
+            width: 640,
+            events: {
+                'onReady': setupVideoPlayer
+//                    'onStateChange': onPlayerStateChange
+            }
+        });
+
+        console.log(playerAudio);
+    }
+
+    function setupAudioPlayer(ev) {
+
+        playerAudio.cueVideoById({
+            videoId: "ZuHakRzq5yE"
+        });
+
+        ev.target.unMute();
+//        ev.target.playVideo();
+
+        setTimeout(updateAudioPlaybackInfo, 1000);
+
+
+    }
+
+    // App = dwa plajerki , loadExample
+
+    function initExamples() {
+        var examples = document.getElementsByClassName('example');
+        attachClickListenersToElements(examples, loadExample);
+    }
+    // TypeScript sie tu klania
+    function attachClickListenersToElements(htmlCollection, handlerFunction) {
+        var i = 0;
+        while (htmlCollection[i]) {
+            htmlCollection[i].addEventListener('click', handlerFunction);
+            i++;
+        }
+    }
+
+    initExamples();
+
+    function clg(a) {
+        console.log(a);
+    }
+
+    function loadExample() { clg('loadExample');
+        clg(this);
+    }
+
+    function setupVideoPlayer(ev) {
+        ev.target.mute();
+        ev.target.playVideo();
+    }
+
+    function updateAudioPlaybackInfo() {
+        var seconds = playerAudio.getCurrentTime();
+        console.log('Yo, ', seconds);
+
+        setTimeout(updateAudioPlaybackInfo, 1000);
+
+    }
+
+
+</script>
+</body>
+</html>
