@@ -58,7 +58,7 @@
         }
 
         .header {
-            background: #edaede;
+            /*background: #edaede;*/
         }
 
         .examples {
@@ -69,7 +69,15 @@
             background: #ff1;
         }
 
-        h1 {}
+        h1 {
+            text-align: center;
+            font-size: 3.5em;
+            margin-top: 0;
+        }
+
+        h2 {
+            text-align: center;
+        }
 
     </style>
 </head>
@@ -78,6 +86,13 @@
     <section class="header">
         <h1>DUB YT</h1>
         <h2>Mix videos with background audio from other videos to make comedic effect. See <a href="#examples">examples.</a></h2>
+        <p></p>
+        <p></p>
+
+        <p></p>
+        <p></p>
+        <p></p>
+
     </section>
     <!--?a=ZuHakRzq5yE&v=SmM0653YvXU-->
     <section class="pure-g">
@@ -95,14 +110,14 @@
             <div class="pure-u-1-2 right-col">
                 <label for="video-from">Video from: </label>
                 <input id="video-from" type="text"/>
-                <button class="pure-button pure-button-primary">DUB IT</button>
+                <button type="button" id="dub-it" class="pure-button pure-button-primary">DUB IT</button>
 
                 <div id="player-video"></div>
             </div>
         </form>
     </section>
     <h2>Examples</h2>
-    <section class="examples">
+    <section class="examples" id="examples">
         <article class="example"
                  data-a="ZuHakRzq5yE"
                  data-v="SmM0653YvXU">
@@ -129,12 +144,13 @@
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     var playerAudio, playerVideo;
+    var playersReady = 0;
     function onYouTubeIframeAPIReady() {
         playerAudio = new YT.Player('player-audio', {
             height: 200,
             width: 240,
             events: {
-                'onReady': setupAudioPlayer
+                'onReady': initPlayer
             }
         });
 
@@ -142,29 +158,49 @@
             height: 390,
             width: 640,
             events: {
-                'onReady': setupVideoPlayer
-//                    'onStateChange': onPlayerStateChange
+                'onReady': initPlayer
             }
         });
 
         console.log(playerAudio);
     }
 
-    function setupAudioPlayer(ev) {
+    function initPlayer(ev) {
+        playersReady++;
+        if (playersReady === 2) {
+            // run application
+            runApp();
+        }
+    }
 
-        playerAudio.cueVideoById({
-            videoId: "ZuHakRzq5yE"
-        });
+    function runApp() {
+        playerAudio.unMute();
+        playerVideo.mute();
 
-        ev.target.unMute();
-//        ev.target.playVideo();
-
-        setTimeout(updateAudioPlaybackInfo, 1000);
-
+        initExamples();
+        initInputs();
 
     }
 
+//        setTimeout(updateAudioPlaybackInfo, 1000);
+
     // App = dwa plajerki , loadExample
+
+    function initInputs() {
+        document.getElementById('dub-it').addEventListener('click', loadUserInput);
+
+    }
+
+    function loadUserInput() {
+        var audioInput = document.getElementById('audio-from').value;
+        var videoInput = document.getElementById('video-from').value;
+
+        // it can be link, or video iD?
+
+        
+
+        startPlayback(audioId, videoId);
+    }
 
     function initExamples() {
         var examples = document.getElementsByClassName('example');
@@ -179,19 +215,26 @@
         }
     }
 
-    initExamples();
-
     function clg(a) {
         console.log(a);
     }
 
-    function loadExample() { clg('loadExample');
-        clg(this);
+    function startPlayback(audioId, videoId) {
+        playerAudio.cueVideoById(audioId);
+        playerVideo.cueVideoById(videoId);
+
+        setTimeout(function () {
+            playerAudio.playVideo();
+            playerVideo.playVideo();
+        }, 150);
     }
 
-    function setupVideoPlayer(ev) {
-        ev.target.mute();
-        ev.target.playVideo();
+    function loadExample() { clg('loadExample');
+    // this = target eventu
+        var audioId = this.getAttribute('data-a'),
+            videoId = this.getAttribute('data-v');
+
+        startPlayback(audioId, videoId);
     }
 
     function updateAudioPlaybackInfo() {
@@ -201,7 +244,6 @@
         setTimeout(updateAudioPlaybackInfo, 1000);
 
     }
-
 
 </script>
 </body>
